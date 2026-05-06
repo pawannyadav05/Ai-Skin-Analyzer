@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
         if (!message) {
             return res.status(400).json({ error: 'No message provided' });
         }
-        
+
         const replyText = await chat(message);
         res.json({ reply: replyText, result: replyText });
     } catch (error) {

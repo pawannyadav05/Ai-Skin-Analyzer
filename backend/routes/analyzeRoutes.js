@@ -7,8 +7,8 @@ function getClientErrorMessage(error, fallback) {
         return message;
     }
 
-    if (message.includes("GEMINI_API_KEY")) {
-        return "Gemini API key is missing. Please add GEMINI_API_KEY to your .env file.";
+    if (message.includes("GEMINI_API_KEY") || message.includes("API Key not found") || message.includes("API_KEY_INVALID")) {
+        return "Gemini API key is invalid or missing. Please check your .env file and ensure the key is correct.";
     }
 
     if (message.includes("Unable to process input image")) {

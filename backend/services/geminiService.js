@@ -92,18 +92,20 @@ async function generateContent(parts, fallbackMessage) {
 
     for (const modelName of modelNames) {
         try {
+            console.log(`Generating content using model: ${modelName}...`);
             const result = await getModel(modelName).generateContent(parts);
             const text = extractResponseText(result);
 
             return text || fallbackMessage;
         } catch (error) {
             lastError = error;
+            console.warn(`Gemini model ${modelName} failed: ${error.message}`);
 
             if (!isRetryableGeminiError(error)) {
                 throw error;
             }
 
-            console.warn(`Gemini model ${modelName} failed with ${error.status || "unknown"}; trying fallback model.`);
+            console.warn(`Attempting fallback from ${modelName}...`);
         }
     }
 
@@ -111,7 +113,20 @@ async function generateContent(parts, fallbackMessage) {
 }
 
 function isRetryableGeminiError(error) {
-    return [429, 500, 502, 503, 504].includes(error && error.status);
+    const status = error && error.status;
+    const message = error && error.message ? error.message.toLowerCase() : "";
+    
+    // Retry/Fallback on these status codes
+    if ([404, 429, 500, 502, 503, 504].includes(status)) {
+        return true;
+    }
+
+    // Also fallback if the model name specifically is not found or unsupported
+    if (message.includes("not found") || message.includes("not supported")) {
+        return true;
+    }
+
+    return false;
 }
 
 function isProductRecommendationRequest(message) {
