@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const apiKey = process.env.GEMINI_API_KEY;
-const primaryModelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+const primaryModelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const fallbackModelNames = ["gemini-1.5-flash-latest", "gemini-1.5-pro"];
 const modelNames = [primaryModelName, ...fallbackModelNames]
     .filter((modelName, index, models) => modelName && models.indexOf(modelName) === index);
