@@ -7,8 +7,8 @@ function getClientErrorMessage(error, fallback) {
         return message;
     }
 
-    if (message.includes("GEMINI_API_KEY") || message.includes("API Key not found") || message.includes("API_KEY_INVALID")) {
-        return "Gemini API key is invalid or missing. Please check your .env file and ensure the key is correct.";
+    if (message.includes("GEMINI_API_KEY")) {
+        return "Gemini API key is missing. Please add GEMINI_API_KEY to your .env file.";
     }
 
     if (message.includes("Unable to process input image")) {
@@ -23,10 +23,10 @@ async function handleAnalyzeSkin(req, res) {
         if (!req.file) {
             return res.status(400).json({ error: 'No image uploaded' });
         }
-        
+
         const problemContext = req.body.problem;
         const resultText = await analyzeSkin(req.file, problemContext);
-        
+
         res.json({ result: resultText, reply: resultText });
     } catch (error) {
         console.error("Full Analyze Route Error Details:", error);
@@ -40,11 +40,11 @@ async function handleAnalyzeIngredients(req, res) {
         if (!req.file) {
             return res.status(400).json({ error: 'No image uploaded' });
         }
-        
+
         const problemContext = req.body.problem;
         const skinContext = req.body.skinContext;
         const resultText = await analyzeIngredients(req.file, problemContext, skinContext);
-        
+
         res.json({ result: resultText, reply: resultText });
     } catch (error) {
         console.error("Analyze Ingredients Route Error:", error);
