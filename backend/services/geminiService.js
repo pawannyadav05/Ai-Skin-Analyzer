@@ -10,21 +10,26 @@ const genAI = new GoogleGenerativeAI(apiKey || "");
 
 // Model lists for different tasks to optimize rate limits
 const textModelNames = [
-    process.env.TEXT_MODEL || "gemini-2.5-flash", // User can set a higher limit model like Gemma via env
-    "gemini-1.5-flash-8b", 
-    "gemini-1.5-flash",
-    "gemini-2.0-flash-exp"
+    process.env.TEXT_MODEL || "gemini-2.0-flash-lite", 
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash",
+    "gemini-2.5-flash"
 ];
 
 const imageModelNames = [
     process.env.IMAGE_MODEL || "gemini-2.5-flash",
-    "gemini-1.5-flash",
-    "gemini-1.5-pro"
+    "gemini-2.0-flash",
+    "gemini-2.5-pro"
 ];
 
 function getModel(modelName) {
     // Use multimodal Gemini models so the same service can handle text and images.
-    return genAI.getGenerativeModel({ model: modelName });
+    return genAI.getGenerativeModel({ 
+        model: modelName,
+        generationConfig: {
+            temperature: 0.3
+        }
+    });
 }
 
 /**
