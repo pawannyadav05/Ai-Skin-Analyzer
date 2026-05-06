@@ -239,6 +239,30 @@ async function sendMessage() {
 
         lastProblem = message;
         lastSkinAnalysis = "";
+
+        const msg = message.toLowerCase();
+        const hasArea = msg.includes("face") || msg.includes("hand") || msg.includes("arm") || msg.includes("leg") || msg.includes("neck") || msg.includes("body");
+        const hasProductIntent = msg.includes("product") || msg.includes("recommend") || msg.includes("suggest") || msg.includes("cream") || msg.includes("routine");
+
+        if (hasArea && hasProductIntent) {
+            addMessage("I can suggest products based on what you described. Please wait...", "bot");
+            callAI(buildProductRecommendationPrompt());
+            currentState = "chat";
+            return;
+        }
+
+        if (hasArea) {
+            addMessage("Thanks for sharing. What kind of help do you need?", "bot");
+            addOptions([
+                { label: "Product Recommendations", action: "product_rec" },
+                { label: "Scan Your Problem Area", action: "scan_face" },
+                { label: "Scan Ingredients", action: "scan_ingredients" },
+                { label: "General Suggestions", action: "general_sug" }
+            ]);
+            currentState = "await_recommendation_type";
+            return;
+        }
+
         addMessage("Which area is affected?", "bot");
         addOptions([
             { label: "Face", action: "area_face" },
