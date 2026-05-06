@@ -2,7 +2,14 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const apiKey = process.env.GEMINI_API_KEY;
 const primaryModelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-const fallbackModelNames = ["gemini-1.5-flash-latest", "gemini-1.5-pro"];
+const fallbackModelNames = [
+    "gemini-1.5-flash-latest", 
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-2.0-flash-exp",
+    "gemini-1.5-pro-latest", 
+    "gemini-1.5-pro"
+];
 const modelNames = [primaryModelName, ...fallbackModelNames]
     .filter((modelName, index, models) => modelName && models.indexOf(modelName) === index);
 
@@ -117,12 +124,18 @@ function isRetryableGeminiError(error) {
     const message = error && error.message ? error.message.toLowerCase() : "";
     
     // Retry/Fallback on these status codes
-    if ([404, 429, 500, 502, 503, 504].includes(status)) {
+    const retryableStatuses = [404, 429, 500, 502, 503, 504];
+    if (retryableStatuses.includes(status)) {
+        return true;
+    }
+
+    // Also fallback if the message contains the status code (some SDK versions don't parse it to .status)
+    if (retryableStatuses.some(s => message.includes(s.toString()))) {
         return true;
     }
 
     // Also fallback if the model name specifically is not found or unsupported
-    if (message.includes("not found") || message.includes("not supported")) {
+    if (message.includes("not found") || message.includes("not supported") || message.includes("service unavailable") || message.includes("too many requests")) {
         return true;
     }
 
