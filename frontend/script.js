@@ -231,6 +231,16 @@ async function sendMessage() {
     addMessage(message, "user");
     input.value = "";
 
+    const lowerMessage = message.toLowerCase();
+    const endingPhrases = ["thank", "bye", "end chat", "nothing else", "that's all", "thats all"];
+    if (endingPhrases.some(phrase => lowerMessage.includes(phrase))) {
+        addMessage("You're welcome! I'm glad I could help. Take care of your skin! ✨", "bot");
+        addOptions([
+            { label: "Start New Analysis", action: "start_over" }
+        ]);
+        currentState = "chat";
+        return;
+    }
     if (currentState === "await_problem") {
         if (!isSkinRelated(message)) {
             addMessage("Please enter a valid skin or face related concern.", "bot");
