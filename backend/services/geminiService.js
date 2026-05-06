@@ -1,24 +1,26 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const apiKey = process.env.GEMINI_API_KEY;
-const primaryModelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-const fallbackModelNames = [
-    "gemini-1.5-flash-latest", 
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-8b",
-    "gemini-2.0-flash-exp",
-    "gemini-1.5-pro-latest", 
-    "gemini-1.5-pro"
-];
-const modelNames = [primaryModelName, ...fallbackModelNames]
-    .filter((modelName, index, models) => modelName && models.indexOf(modelName) === index);
 
 if (!apiKey) {
     console.warn("GEMINI_API_KEY is not configured. Gemini requests will fail until it is set.");
 }
 
-// Initialize GoogleGenerativeAI with your API key.
 const genAI = new GoogleGenerativeAI(apiKey || "");
+
+// Model lists for different tasks to optimize rate limits
+const textModelNames = [
+    process.env.TEXT_MODEL || "gemini-2.5-flash", // User can set a higher limit model like Gemma via env
+    "gemini-1.5-flash-8b", 
+    "gemini-1.5-flash",
+    "gemini-2.0-flash-exp"
+];
+
+const imageModelNames = [
+    process.env.IMAGE_MODEL || "gemini-2.5-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro"
+];
 
 function getModel(modelName) {
     // Use multimodal Gemini models so the same service can handle text and images.
@@ -90,14 +92,15 @@ function extractResponseText(result) {
     return sanitizeModelText(candidateText);
 }
 
-async function generateContent(parts, fallbackMessage) {
+async function generateContent(parts, fallbackMessage, customModelNames = null) {
     if (!apiKey) {
         throw new Error("GEMINI_API_KEY is missing.");
     }
 
+    const activeModelNames = customModelNames || imageModelNames;
     let lastError;
 
-    for (const modelName of modelNames) {
+    for (const modelName of activeModelNames) {
         try {
             console.log(`Generating content using model: ${modelName}...`);
             const result = await getModel(modelName).generateContent(parts);
@@ -287,7 +290,8 @@ async function analyzeSkin(file, problemContext) {
 
         return await generateContent(
             [prompt, imagePart],
-            "I received the image, but I could not generate a clear skin analysis. Please try a brighter, sharper photo."
+            "I received the image, but I could not generate a clear skin analysis. Please try a brighter, sharper photo.",
+            imageModelNames
         );
     } catch (error) {
         console.error("Error in analyzeSkin:", error);
@@ -323,7 +327,8 @@ async function analyzeIngredients(file, problemContext, skinContext) {
 
         return await generateContent(
             [prompt, imagePart],
-            "I received the label image, but I could not read enough ingredients. Please try a clearer photo of the full label."
+            "I received the label image, but I could not read enough ingredients. Please try a clearer photo of the full label.",
+            imageModelNames
         );
     } catch (error) {
         console.error("Error in analyzeIngredients:", error);
@@ -348,7 +353,8 @@ async function chat(message) {
 
         return await generateContent(
             prompt,
-            "I'm sorry, I couldn't generate a helpful response. Please try again."
+            "I'm sorry, I couldn't generate a helpful response. Please try again.",
+            textModelNames
         );
     } catch (error) {
         console.error("Error in chat:", error);
