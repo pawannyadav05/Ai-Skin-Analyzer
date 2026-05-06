@@ -303,12 +303,12 @@ async function callAI(message, showProductOption = false) {
             } else {
                 addMessage(getAIText(data) || "Sorry, I am having trouble generating a response.", "bot");
             }
-            addBackToMenuOption();
+            addMessage("How can I help you?", "bot");
             return;
         }
 
         addMessage(getAIText(data) || "Sorry, I could not generate a response. Please try again.", "bot");
-        addBackToMenuOption();
+        addMessage("Is there anything else I can help you with?", "bot");
         
         if (showProductOption) {
             addOptions([
@@ -317,7 +317,7 @@ async function callAI(message, showProductOption = false) {
         }
     } catch (e) {
         addMessage("Sorry, I am having trouble connecting to the server.", "bot");
-        addBackToMenuOption();
+        addMessage("How can I help you?", "bot");
     }
 }
 
@@ -482,14 +482,14 @@ async function uploadImage(file) {
         const analysisText = getAIText(data) || "I received the image, but I could not create a clear analysis. Please try a brighter, sharper photo.";
         lastSkinAnalysis = analysisText;
         addMessage(analysisText, "bot");
+        addMessage("How else can I help you today?", "bot");
         addOptions([
             { label: "Product Suggestions", action: "product_rec" }
         ]);
-        addBackToMenuOption();
         currentState = "chat";
     } catch (e) {
         addMessage("Sorry, there was an error analyzing the image. Make sure the backend server is running.", "bot");
-        addBackToMenuOption();
+        addMessage("How can I help you?", "bot");
         currentState = "chat";
     }
 }
@@ -523,11 +523,11 @@ async function uploadIngredients(file) {
         }
 
         addMessage(getAIText(data) || "I received the image, but I could not read the ingredients clearly. Please try a sharper photo.", "bot");
-        addBackToMenuOption();
+        addMessage("What would you like to do next?", "bot");
         currentState = "chat";
     } catch (e) {
         addMessage("Sorry, there was an error connecting to the backend server.", "bot");
-        addBackToMenuOption();
+        addMessage("How can I help you?", "bot");
         currentState = "chat";
     }
 }
