@@ -1,9 +1,5 @@
 # GlowAI | AI Skin Analyzer ✨
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D%2018.0.0-brightgreen)](https://nodejs.org/)
-[![AI Powered](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-blue)](https://deepmind.google/technologies/gemini/)
-
 **GlowAI** is a state-of-the-art dermatological analysis tool powered by Google's Gemini 2.5 Flash. It provides instant, professional-grade skin analysis, ingredient scanning, and personalized skincare advice through an intuitive AI-driven interface.
 
 ---
