@@ -4,7 +4,7 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D%2018.0.0-brightgreen)](https://nodejs.org/)
 [![AI Powered](https://img.shields.io/badge/AI-Gemini%201.5%20Flash-blue)](https://deepmind.google/technologies/gemini/)
 
-**GlowAI** is a state-of-the-art dermatological analysis tool powered by Google's Gemini 1.5 Flash. It provides instant, professional-grade skin analysis, ingredient scanning, and personalized skincare advice through an intuitive AI-driven interface.
+**GlowAI** is a state-of-the-art dermatological analysis tool powered by Google's Gemini 2.5 Flash. It provides instant, professional-grade skin analysis, ingredient scanning, and personalized skincare advice through an intuitive AI-driven interface.
 
 ---
 
@@ -25,15 +25,15 @@ GlowAI employs a sophisticated multi-model redundancy system to ensure maximum a
 ### Primary Models & Fallback Logic
 To maintain high reliability even during rate limiting or service fluctuations, the system utilizes a fallback mechanism:
 
+- **Image & Skin Analysis**:
+  1. `gemini-2.5-flash` (Default)
+  2. `gemini-2.0-flash`
+  3. `gemini-2.5-pro`
 - **Text & Chat Analysis**: 
   1. `gemini-2.0-flash-lite` (Default)
   2. `gemini-2.5-flash-lite`
   3. `gemini-2.0-flash`
   4. `gemini-2.5-flash`
-- **Image & Skin Analysis**:
-  1. `gemini-2.5-flash` (Default)
-  2. `gemini-2.0-flash`
-  3. `gemini-2.5-pro`
 
 ### Optimized Configuration
 - **Temperature (0.3)**: Fine-tuned for precise, consistent, and scientifically accurate dermatological advice.
@@ -140,6 +140,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - [Inter Font](https://fonts.google.com/specimen/Inter) for the sleek typography.
 - Inspired by the need for accessible dermatological insights.
 
----
 
-<p align="center">Made with ❤️ by Pawan Kumar Yadav</p>
